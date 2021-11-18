@@ -125,5 +125,15 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
+# isort
+.isort.cfg
+
 # Pyre type checker
 .pyre/
+
+# Config
+/config/*
+!/config/config-example.json
+
+# Invoices
+/invoices

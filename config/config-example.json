@@ -1,0 +1,33 @@
+{
+    "jira": {
+        "token": "base64 encoded <user>:<token>",
+        "url": "https://<project>.atlassian.net/rest/api/2",
+        "user": "user@gmail.com"
+    },
+    "me": {
+        "name": "Mashkovskiy Artem Viktorovich",
+        "address": "1, apt. 2, st. Lenina, Chelyabinsk, Chelyabinsk region, 454000, Russia",
+        "tax_id": "777777777777",
+        "bank_name": "Tinkoff Bank",
+        "bank_address": "38A, Bld. 26, 2 Khutorskaya street, Moscow, 127287",
+        "swift": "SWIFTXXX",
+        "account": "4000000000000000"
+    },
+    "company": {
+        "name": "Company GmbH",
+        "street": "Strasse 61",
+        "postcode": "10000",
+        "city": "Berlin",
+        "country": "Germany",
+        "tax_id": "DE0000000"
+    },
+    "agreement": {
+        "number": "123",
+        "date": "Oct 21 2021"
+    },
+    "pay": {
+        "total": 5700,
+        "currency": "euro",
+        "tax": 0.0
+    }
+}

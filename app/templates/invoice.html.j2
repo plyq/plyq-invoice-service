@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Invoice</title>
+    </head>
+    <style>
+    @page {
+    margin: 5cm 2cm 5cm 2cm;
+}
+
+html {
+    font-size: 10pt;
+    font-family: "Helvetica";
+}
+
+.section {
+    margin-top: 1cm;
+}
+
+/**
+ * Address table
+ */
+ .adressTable tr:nth-child(1) td {
+     border-bottom: 1px solid black;
+ }
+
+ .small {
+     font-size: 8pt;
+ }
+
+/**
+ * Info table
+ */
+.infoTable {
+    margin-top: 3cm;
+    width: 100%;
+}
+
+.infoTable td {
+    vertical-align: top;
+}
+
+/**
+ * Invoice table
+ */
+.invoiceTable {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.invoiceTable td {
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.invoiceTable thead {
+    background: lightgray;
+}
+
+.invoiceTable .padrow {
+    height: 10px;
+}
+
+.invoiceTable .tfoot td {
+    border: none;
+    padding: 2px;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.footer {
+    text-align: right;
+    font-weight: bold;
+}
+
+.item {
+    font-weight: bold;
+}
+
+    </style>
+    <body>
+        <h1>Invoice</h1>
+        <div class="section">
+            <table class="infoTable">
+                <tr>
+                    <td width="30%"></td>
+                    <td width="12%"></td>
+                    <td width="13%" class="item">Agreement</td>
+                    <td width="45%">{{ agreement.number }}</td>
+                </tr>
+                <tr>
+                    <td><b>{{ from.name }}</b></td>
+                    <td></td>
+                    <td class="item">Agreement date</td>
+                    <td>{{ agreement.date }}</td>
+                </tr>
+                    <td>{{ from.address }}</td>
+                    <td></td>
+                    <td class="item">Invoice number</td>
+                    <td>{{ invoice.number }}</td>
+                <tr>
+                    <td>TAX ID {{ from.tax_id }}</td>
+                    <td></td>
+                    <td class="item">Invoice date</td>
+                    <td>{{ invoice.date }}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td class="item">Delivery period</td>
+                    <td>{{ invoice.period }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <div>
+                <table class="adressTable">
+                    <tr>
+                        <td><b>Bill to</b></td>
+                    </tr>
+                    <tr>
+                        <td>{{ to.name }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ to.street }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ to.postcode }} {{ to.city }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ to.country }}</td>
+                    </tr>
+                    <tr>
+                        <td>TAX ID {{ to.tax_id }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="section">
+            <table class="invoiceTable">
+                <thead>
+                    <tr>
+                        <td>Description</td>
+                        <td>Amount</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in tasks %}
+                    <tr>
+                        <td>{{ item.description }}</td>
+                        <td class="nowrap">{{ item.amount }} &{{ currency }};</td>
+                    </tr>
+                    {% endfor %}
+                    <tr class="tfoot">
+                        <td class="padrow"></td>
+                    </tr>
+                    <tr class="tfoot">
+                        <td class="footer">Subtotal</td>
+                        <td class="nowrap">{{ totals.sub }} &{{ currency }};</td>
+                    </tr>
+                    <tr class="tfoot">
+                        <td class="footer">Tax</td>
+                        <td class="nowrap">{{ totals.tax }}%</td>
+                    </tr>
+                    <tr class="tfoot">
+                        <td class="footer">Balance due</td>
+                        <td class="nowrap">{{ totals.total }} &{{ currency }};</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="section">
+            <table class="infoTable">
+                <tr>
+                    <td class="item" width="15%">Credit to</td>
+                    <td width="85%">{{ from.name }}</td>
+                </tr>
+                <tr>
+                    <td class="item">Bank name</td>
+                    <td>{{ from.bank_name }}</td>
+                </tr>
+                <tr>
+                    <td class="item">Bank address</td>
+                    <td>{{ from.bank_address }}</td>
+                </tr>
+                <tr>
+                    <td class="item">Swift</td>
+                    <td>{{ from.swift }}</td>
+                </tr>
+                <tr>
+                    <td class="item">Account</td>
+                    <td>{{ from.account }}</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>
