@@ -8,7 +8,7 @@ Create the invoice based on the config
 ## How to run
 
 ```bash
-pipenv run ./run.py config/company-a.json
+pipenv run python ./run.py config/company-a.json
 ```
 
 It will create a new invoice under the `invoices` dir
