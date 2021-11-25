@@ -2,13 +2,14 @@
 import datetime
 import logging
 import os
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import pdfkit
 from jinja2 import Environment, PackageLoader, select_autoescape
 
 from app.config.service import Config
 from app.jira.service import JiraService
+from app.tools.date import working_days_percent
 
 _LOG = logging.getLogger(__name__)
 
@@ -28,7 +29,7 @@ class Runner:
         :param config_file: path to JSON config
         """
         self._config = Config.from_file(config_file)
-        self._render_params = None
+        self._render_params: Optional[Dict[str, Any]] = None
 
     def run(self) -> None:
         """Create PDf invoice."""
@@ -70,14 +71,23 @@ class Runner:
         """Build render params from config"""
         if self._render_params is not None:
             return self._render_params
-        render_params = {}
+        render_params: Dict[str, Any] = {}
         render_params["from"] = self._config.me
         render_params["to"] = self._config.company
         render_params["agreement"] = self._config.agreement
         render_params["currency"] = self._config.pay.currency
-        render_params["totals"] = {"sub": self._config.pay.total * 1.0}
+        render_params["totals"] = {
+            "sub": self._config.pay.total
+            * 1.0
+            * working_days_percent(
+                start=datetime.datetime.strptime(
+                    self._config.start_date, "%b %d %Y"
+                ).date()
+            )
+            / 100
+        }
         render_params["totals"]["tax"] = self._config.pay.tax * 100
-        render_params["totals"]["total"] = self._config.pay.total * (
+        render_params["totals"]["total"] = render_params["totals"]["sub"] * (
             1 - self._config.pay.tax
         )
         # Get tasks.
@@ -87,21 +97,16 @@ class Runner:
             raise ValueError("Not all tasks were taken")
         # Save tasks.
         render_params["tasks"] = [{"description": task, "amount": 0} for task in tasks]
-        amounts = [self._config.pay.total // len(tasks)] * len(tasks)
-        amounts[0] += self._config.pay.total - sum(amounts)
+        amounts = [round(render_params["totals"]["sub"] / len(tasks), 2)] * len(tasks)
+        amounts[0] += round(render_params["totals"]["sub"] - sum(amounts), 2)
         for i, item in enumerate(render_params["tasks"]):
             item["amount"] = amounts[i]
         # Get invoice info.
         today = datetime.date.today()
         render_params["invoice"] = {}
-        render_params["invoice"]["date"] = today.strftime("%b %Y %d")
+        render_params["invoice"]["date"] = today.strftime("%d %b %Y")
         render_params["invoice"]["period"] = today.strftime("%B %Y")
         render_params["invoice"]["number"] = "INV%s" % today.strftime("%Y%m")
         # Return params.
         self._render_params = render_params
         return self._render_params
-
-
-def main() -> None:
-
-    return "Hello world!"
